@@ -59,7 +59,7 @@ class UnitCircle(Scene):
         tan = always_redraw(lambda: Line(
             radius.get_end(), [(1/cos(theta_tracker.get_value() * (PI/180))) * 2, 0, 0], color=RED))
 
-        tan_label = always_redraw(lambda: MathTex("\\sin(\\theta)").shift(
+        tan_label = always_redraw(lambda: MathTex("\\tan(\\theta)").shift(
             tan.get_center() + [0, 0.1, 0]).scale(0.25).rotate(theta_tracker.get_value() * DEGREES - 90 * DEGREES))
 
         self.play(Create(tan), Write(tan_label))
