@@ -81,33 +81,37 @@ class UnitCircle(Scene):
             show_ellipsis=True,
             num_decimal_places=3,
             include_sign=True,
-        )).shift([sin_text1.get_x() + 0.1, sin_text1.get_y(), 0])
+        ).next_to(sin_text1, RIGHT))
         cos_value = always_redraw(lambda: DecimalNumber(
             np.cos(theta_tracker.get_value() * (PI/180)),
             show_ellipsis=True,
             num_decimal_places=3,
             include_sign=True,
-        )).shift([cos_text1.get_x() + 0.1, cos_text1.get_y(), 0])
+        ).next_to(cos_text1, RIGHT))
         tan_value = always_redraw(lambda: DecimalNumber(
             np.tan(theta_tracker.get_value() * (PI/180)),
             show_ellipsis=True,
             num_decimal_places=3,
             include_sign=True,
-        )).shift([tan_text1.get_x() + 0.2, tan_text1.get_y(), 0])
+        ).next_to(tan_text1, RIGHT))
 
         self.play(Create(theta), Write(theta_label))
         self.play(Create(opp), Create(adj))
         self.play(Write(opp_label), Write(adj_label), Write(radius_label))
 
+        sin_theta = always_redraw(lambda: MathTex("\\sin(\\theta)").shift(
+            [opp.get_center()[0] - 0.1, opp.get_center()[1], 0]).rotate(90 * DEGREES).scale(0.5))
+
         self.play(Write(sin_text))
         self.play(Write(sin_text1))
-        self.play(FadeTransform(opp_label, always_redraw(lambda: MathTex("\\sin(\\theta)").shift(
-            [opp.get_center()[0] - 0.1, opp.get_center()[1], 0]).rotate(90 * DEGREES).scale(0.5))))
+        self.play(FadeTransform(opp_label, sin_theta))
+
+        cos_theta = always_redraw(lambda: MathTex("\\cos(\\theta)").shift(
+            [adj.get_center()[0] + 0.2, adj.get_center()[1] + 0.1, 0]).scale(0.5))
 
         self.play(Write(cos_text))
         self.play(Write(cos_text1))
-        self.play(FadeTransform(adj_label, always_redraw(lambda: MathTex("\\cos(\\theta)").shift(
-            [adj.get_center()[0] + 0.2, adj.get_center()[1] + 0.1, 0]).scale(0.5))))
+        self.play(FadeTransform(adj_label, cos_theta))
 
         self.play(Write(tan_text))
         self.play(Write(tan_text1))
@@ -115,21 +119,16 @@ class UnitCircle(Scene):
 
         self.wait(1)
 
-        for j in [sin_text1, cos_text1, tan_text1]:
-            self.play(j.animate.become(
-                MathTex(j.get_tex_string()[:15]).shift([j.get_x() - 1, j.get_y(), 0])))
+        for j in [[sin_text1, sin_value], [cos_text1, cos_value], [tan_text1, tan_value]]:
+            self.play(j[0].animate.become(
+                MathTex(j[0].get_tex_string()[:15]).shift([j[0].get_x() - 1, j[0].get_y(), 0])), Write(j[1]))
 
-        self.play(Write(sin_value), Write(cos_value), Write(tan_value))
+        self.wait(1)
+        self.play(theta_tracker.animate.set_value(290), run_time=15)
+
+        # Looking at individual sin and cos
 
         self.wait(1)
 
-        # for i in [20, 60, 90, 120, 180, 240, 270, 300, 330]:
-        #     self.play(theta_tracker.animate.set_value(i))
-        #     self.wait(0.5)
-
-
-class UnitCircle2(Scene):
-    def construct(self):
-        plane = NumberPlane(axis_config={"include_numbers": True}).scale(2)
-
-        self.add(plane)
+        self.play(FadeOut(sin_text, sin_text1, sin_value), FadeOut(cos_text, cos_text1, cos_value), FadeOut(tan_text, tan_text1, tan_value), FadeOut(
+            opp, opp_label, adj, adj_label, radius, radius_label, tan, tan_label, theta, theta_label, sin_theta, cos_theta))
