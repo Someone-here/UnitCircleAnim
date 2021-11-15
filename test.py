@@ -129,6 +129,3 @@ class UnitCircle(Scene):
         # Looking at individual sin and cos
 
         self.wait(1)
-
-        self.play(FadeOut(sin_text, sin_text1, sin_value), FadeOut(cos_text, cos_text1, cos_value), FadeOut(tan_text, tan_text1, tan_value), FadeOut(
-            opp, opp_label, adj, adj_label, radius, radius_label, tan, tan_label, theta, theta_label, sin_theta, cos_theta))
